@@ -17,6 +17,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        tableView.dataSource = self
+        tableView.delegate = self
+        
         // Do any additional setup after loading the view.
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -30,7 +33,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 self.movies = dataDictionary["results"] as! [[String:Any]] // casting as an array of dictionaries
                 
-                
+                self.tableView.reloadData()
                 // TODO: Get the array of movies
                 // TODO: Store the movies in a property to use elsewhere
                 // TODO: Reload your table view data
@@ -40,15 +43,24 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         task.resume()
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) ->
-        Int {
-            return 50;
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            return movies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell") as! MovieCell
         
-        cell.textLabel!.text = "row: \(indexPath.row)"
+        let movie = movies[indexPath.row]
+        let title = movie["title"] as! String
+        let synopsis = movie["overview"] as! String
+        
+        cell.synopsisLabel.text = synopsis
+        cell.titleLabel.text = title
+        
+        let baseUrl = "http://image.tmdb.org/t/p/w185"
+        let posterPath = movie["poster_path"] as! String
+        let posterUrl = URL(string: baseUrl + posterPath)
+        
         
         return cell
     }
