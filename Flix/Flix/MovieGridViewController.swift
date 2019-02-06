@@ -11,7 +11,7 @@ import AlamofireImage
 
 class MovieGridViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
 
-     var movies = [[String:Any]]() // an array of dictionaries
+    var movies = [[String:Any]]() // an array of dictionaries
     @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
@@ -22,7 +22,11 @@ class MovieGridViewController: UIViewController, UICollectionViewDataSource, UIC
         
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         
+        layout.minimumLineSpacing = 4 //between the rows more spacing
+        layout.minimumInteritemSpacing = 4 // next to the posters
         
+        let width = (view.frame.size.width - layout.minimumInteritemSpacing * 2) / 3
+        layout.itemSize = CGSize(width: width, height: width * 3 / 2)
         
         // Do any additional setup after loading the view.
         let url = URL(string: "https://api.themoviedb.org/3/movie/297762/similar?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed&language=en-US&page=1")!
